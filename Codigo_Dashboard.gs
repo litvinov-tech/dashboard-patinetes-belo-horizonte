@@ -13,7 +13,9 @@ var DASH_CONFIG = {
 //  Upload via CSV (Belo Horizonte.csv) na aba Upload do dashboard
 //  weekday-morning = DIA (0h-12h), weekday-evening = NOITE (12h-24h)
 // ================================================================
-function _carregarPontosMonitor() {
+function _carregarPontosMonitor(d) {
+  d = d || {};
+  var cidadeAtual = String(d.cidade || "");
   var ss = obterPlanilha();
   var aba = ss.getSheetByName("Pontos_Config");
   var dia = [], noite = [], fds = [], all = [];
@@ -28,7 +30,8 @@ function _carregarPontosMonitor() {
     var lng = parseFloat(vals[i][2]) || 0;
     var cap = parseInt(vals[i][3]) || 0;
     var schedule = String(vals[i][4] || "").toLowerCase();
-    if (!nome) continue;
+    var cidadeLinha = String(vals[i][5] || "");
+    if (!nome || !_cidadeConfigMatch(cidadeLinha, cidadeAtual)) continue;
     var ponto = {endereco:nome, lat:lat, lng:lng, capacidade:cap, zona:"CSV", schedule:schedule};
     all.push(ponto);
     // Track membership by coordinate key (more reliable than name)
@@ -48,7 +51,8 @@ function _carregarPontosMonitor() {
       var tLat = parseFloat(valsTodos[t][1]) || 0;
       var tLng = parseFloat(valsTodos[t][2]) || 0;
       var tZona = String(valsTodos[t][3] || "");
-      if (tNome && tLat) {
+      var tCidade = String(valsTodos[t][5] || "");
+      if (tNome && tLat && _cidadeConfigMatch(tCidade, cidadeAtual)) {
         var tKey = tLat.toFixed(4) + "," + tLng.toFixed(4);
         todosPontos[tKey] = {nome:tNome, lat:tLat, lng:tLng, zona:tZona};
       }
@@ -118,11 +122,11 @@ function despachar(d) {
   if (d.acao === "baterias")         return getBaterias(d);
   if (d.acao === "listarDatasBat")   return listarDatasBaterias(d);
   if (d.acao === "salvarPontosCSV")  return salvarPontosCSV(d);
-  if (d.acao === "carregarPontos")   return carregarPontosConfig();
+  if (d.acao === "carregarPontos")   return carregarPontosConfig(d);
   if (d.acao === "limparDados")      return limparDados(d);
   if (d.acao === "resumoGeral")      return getResumoGeral(d);
   if (d.acao === "salvarTodosPontos")  return salvarTodosPontos(d);
-  if (d.acao === "carregarTodosPontos") return carregarTodosPontos();
+  if (d.acao === "carregarTodosPontos") return carregarTodosPontos(d);
   if (d.acao === "buscarPontosGoJet")  return buscarPontosGoJet(d);
   if (d.acao === "listarCidadesGoJet") return listarCidadesGoJet();
   if (d.acao === "deletarBatData")   return deletarBatData(d);
@@ -130,7 +134,7 @@ function despachar(d) {
   if (d.acao === "listarFuncionarios") return listarFuncionarios();
   if (d.acao === "deletarFuncionario") return deletarFuncionario(d);
   if (d.acao === "salvarZonas")    return salvarZonas(d);
-  if (d.acao === "carregarZonas")  return carregarZonas();
+  if (d.acao === "carregarZonas")  return carregarZonas(d);
   if (d.acao === "listarConfigs")     return listarConfigs(d);
   if (d.acao === "deletarConfig")     return deletarConfig(d);
   return respJson({ok:false, msg:"Acao desconhecida"});
@@ -162,6 +166,42 @@ function garantirAba(ss, nome, colunas) {
   return aba;
 }
 
+// ================================================================
+//  CONFIG SHEET HELPERS
+// ================================================================
+function garantirAbaSchema(ss, nome, colunas) {
+  var aba = garantirAba(ss, nome, colunas);
+  var lastCol = Math.max(aba.getLastColumn(), 1);
+  var headers = aba.getRange(1, 1, 1, lastCol).getValues()[0].map(function(h){ return String(h || ""); });
+  for (var i = 0; i < colunas.length; i++) {
+    if (headers.indexOf(colunas[i]) === -1) {
+      headers.push(colunas[i]);
+      aba.getRange(1, headers.length).setValue(colunas[i]);
+    }
+  }
+  aba.getRange(1, 1, 1, headers.length).setBackground("#1e3a5f").setFontColor("#fff").setFontWeight("bold");
+  aba.setFrozenRows(1);
+  return aba;
+}
+
+function _cidadeConfigMatch(cidadeLinha, cidadeAtual) {
+  cidadeLinha = String(cidadeLinha || "");
+  cidadeAtual = String(cidadeAtual || "");
+  if (!cidadeAtual) return true;
+  return !cidadeLinha || cidadeLinha === cidadeAtual;
+}
+
+function _removerConfigCidade(aba, cidadeAtual, cidadeCol) {
+  if (!aba || aba.getLastRow() < 2) return;
+  cidadeAtual = String(cidadeAtual || "");
+  var vals = aba.getDataRange().getValues();
+  for (var i = vals.length - 1; i >= 1; i--) {
+    var cidadeLinha = String(vals[i][cidadeCol - 1] || "");
+    if (!cidadeAtual || !cidadeLinha || cidadeLinha === cidadeAtual) {
+      aba.deleteRow(i + 1);
+    }
+  }
+}
 // ================================================================
 //  NORMALIZAR ENDERECO (para matching)
 // ================================================================
@@ -400,7 +440,7 @@ function importarDados(d) {
   aba.setFrozenRows(1);
 
   // Carregar pontos monitor do CSV (Pontos_Config sheet)
-  var _pm = _carregarPontosMonitor();
+  var _pm = _carregarPontosMonitor(d);
   var PONTOS_ALL = _pm.all || [];
   var MEMBERSHIP = _pm.membership || {};
   var semPontosMonitor = (PONTOS_ALL.length === 0);
@@ -932,7 +972,7 @@ function compararDatas(d) {
 //  PONTOS MONITOR (retorna lista para o frontend)
 // ================================================================
 function getPontosMonitor() {
-  var _pm = _carregarPontosMonitor();
+  var _pm = _carregarPontosMonitor(d);
   return respJson({ok:true, pontos:_pm.dia, pontosDia:_pm.dia, pontosNoite:_pm.noite, pontosFds:_pm.fds, total:_pm.dia.length+_pm.noite.length+_pm.fds.length});
 }
 
@@ -1393,16 +1433,10 @@ function salvarPontosCSV(d) {
   if (!rows.length) return respJson({ok:false, msg:"Nenhum dado recebido"});
 
   var ss = obterPlanilha();
-  var COLUNAS = ["parking_name","lat","lng","capacity","schedule"];
-
-  // Remove aba existente e recria
-  var abaExist = ss.getSheetByName("Pontos_Config");
-  if (abaExist) ss.deleteSheet(abaExist);
-
-  var aba = ss.insertSheet("Pontos_Config");
-  aba.appendRow(COLUNAS);
-  aba.getRange(1,1,1,COLUNAS.length).setBackground("#1e3a5f").setFontColor("#fff").setFontWeight("bold");
-  aba.setFrozenRows(1);
+  var cidadeAtual = String(d.cidade || "");
+  var COLUNAS = ["parking_name","lat","lng","capacity","schedule","Cidade"];
+  var aba = garantirAbaSchema(ss, "Pontos_Config", COLUNAS);
+  _removerConfigCidade(aba, cidadeAtual, 6);
 
   var processados = [];
   for (var i = 0; i < rows.length; i++) {
@@ -1413,14 +1447,13 @@ function salvarPontosCSV(d) {
     var cap = parseInt(r.capacity || r.capacidade || 0);
     var schedule = String(r.schedule_name || r.scheduleName || r.schedule || "");
     if (!nome) continue;
-    processados.push([nome, lat, lng, cap, schedule]);
+    processados.push([nome, lat, lng, cap, schedule, cidadeAtual]);
   }
 
   if (processados.length > 0) {
-    aba.getRange(2,1,processados.length,COLUNAS.length).setValues(processados);
+    aba.getRange(aba.getLastRow()+1,1,processados.length,COLUNAS.length).setValues(processados);
   }
 
-  // Count by schedule type
   var countDia = 0, countNoite = 0, countFds = 0, countOutro = 0;
   for (var j = 0; j < processados.length; j++) {
     var sched = String(processados[j][4]).toLowerCase();
@@ -1430,19 +1463,17 @@ function salvarPontosCSV(d) {
     else countOutro++;
   }
 
-  // Track in Indice_Config
   var abaIC = garantirAba(ss, "Indice_Config", ["Tipo","Descricao","Total","ImportadoEm","Cidade"]);
   var agoraIC = Utilities.formatDate(new Date(), "America/Sao_Paulo", "dd/MM/yyyy HH:mm");
-  // Remove old entry for same type+cidade
   if (abaIC.getLastRow() >= 2) {
     var valsIC = abaIC.getDataRange().getValues();
     for (var ic = valsIC.length - 1; ic >= 1; ic--) {
-      if (String(valsIC[ic][0]) === "pontos_monitor" && String(valsIC[ic][4]) === String(d.cidade || "")) {
+      if (String(valsIC[ic][0]) === "pontos_monitor" && String(valsIC[ic][4]) === cidadeAtual) {
         abaIC.deleteRow(ic + 1);
       }
     }
   }
-  abaIC.appendRow(["pontos_monitor", "Pontos Monitores CSV", processados.length, agoraIC, d.cidade || ""]);
+  abaIC.appendRow(["pontos_monitor", "Pontos Monitores CSV", processados.length, agoraIC, cidadeAtual]);
 
   return respJson({
     ok:true,
@@ -1461,46 +1492,49 @@ function salvarZonas(d) {
   var rows = d.rows || [];
   if (!rows.length) return respJson({ok:false, msg:"Nenhuma zona recebida"});
   var ss = obterPlanilha();
-  var aba = garantirAba(ss, "Zonas_Config", ["Nome","WKT","Cor","DataImport"]);
-  // Limpar dados antigos
-  if (aba.getLastRow() > 1) aba.getRange(2,1,aba.getLastRow()-1,4).clearContent();
+  var cidadeAtual = String(d.cidade || "");
+  var aba = garantirAbaSchema(ss, "Zonas_Config", ["Nome","WKT","Cor","DataImport","Cidade"]);
+  _removerConfigCidade(aba, cidadeAtual, 5);
   var dataLabel = d.dataLabel || Utilities.formatDate(new Date(), "America/Sao_Paulo", "yyyy-MM-dd");
   var dados = [];
   for (var i = 0; i < rows.length; i++) {
     var r = rows[i];
     if (!r.wkt || !r.nome) continue;
-    dados.push([r.nome, r.wkt, r.cor || "", dataLabel]);
+    dados.push([r.nome, r.wkt, r.cor || "", dataLabel, cidadeAtual]);
   }
   if (dados.length > 0) {
-    aba.getRange(2,1,dados.length,4).setValues(dados);
+    aba.getRange(aba.getLastRow()+1,1,dados.length,5).setValues(dados);
   }
-  // Track in Indice_Config
   var abaIC = garantirAba(ss, "Indice_Config", ["Tipo","Descricao","Total","ImportadoEm","Cidade"]);
   var agoraIC = Utilities.formatDate(new Date(), "America/Sao_Paulo", "dd/MM/yyyy HH:mm");
   if (abaIC.getLastRow() >= 2) {
     var valsIC = abaIC.getDataRange().getValues();
     for (var ic = valsIC.length - 1; ic >= 1; ic--) {
-      if (String(valsIC[ic][0]) === "zonas" && String(valsIC[ic][4]) === String(d.cidade || "")) {
+      if (String(valsIC[ic][0]) === "zonas" && String(valsIC[ic][4]) === cidadeAtual) {
         abaIC.deleteRow(ic + 1);
       }
     }
   }
-  abaIC.appendRow(["zonas", "Mapa da Cidade - Zonas", dados.length, agoraIC, d.cidade || ""]);
+  abaIC.appendRow(["zonas", "Mapa da Cidade - Zonas", dados.length, agoraIC, cidadeAtual]);
 
   return respJson({ok:true, msg:"Salvas " + dados.length + " zonas", total:dados.length});
 }
 
-function carregarZonas() {
+function carregarZonas(d) {
+  d = d || {};
+  var cidadeAtual = String(d.cidade || "");
   var ss = obterPlanilha();
   var aba = ss.getSheetByName("Zonas_Config");
-  if (!aba || aba.getLastRow() < 2) return respJson({ok:true, zonas:[]});
+  if (!aba || aba.getLastRow() < 2) return respJson({ok:true, zonas:[], total:0});
   var vals = aba.getDataRange().getValues();
   var zonas = [];
   for (var i = 1; i < vals.length; i++) {
     if (!vals[i][0]) continue;
-    zonas.push({nome:String(vals[i][0]), wkt:String(vals[i][1]), cor:String(vals[i][2])});
+    var cidadeLinha = String(vals[i][4] || "");
+    if (!_cidadeConfigMatch(cidadeLinha, cidadeAtual)) continue;
+    zonas.push({nome:String(vals[i][0]), wkt:String(vals[i][1]), cor:String(vals[i][2]), cidade:cidadeLinha});
   }
-  return respJson({ok:true, zonas:zonas});
+  return respJson({ok:true, zonas:zonas, total:zonas.length});
 }
 
 // ================================================================
@@ -1510,13 +1544,10 @@ function salvarTodosPontos(d) {
   var rows = d.rows || [];
   if (!rows.length) return respJson({ok:false, msg:"Nenhum dado recebido"});
   var ss = obterPlanilha();
-  var COLUNAS = ["nome","lat","lng","zona","emoji"];
-  var abaExist = ss.getSheetByName("Todos_Pontos");
-  if (abaExist) ss.deleteSheet(abaExist);
-  var aba = ss.insertSheet("Todos_Pontos");
-  aba.appendRow(COLUNAS);
-  aba.getRange(1,1,1,COLUNAS.length).setBackground("#1e3a5f").setFontColor("#fff").setFontWeight("bold");
-  aba.setFrozenRows(1);
+  var cidadeAtual = String(d.cidade || "");
+  var COLUNAS = ["nome","lat","lng","zona","emoji","Cidade"];
+  var aba = garantirAbaSchema(ss, "Todos_Pontos", COLUNAS);
+  _removerConfigCidade(aba, cidadeAtual, 6);
 
   var processados = [];
   for (var i = 0; i < rows.length; i++) {
@@ -1525,28 +1556,26 @@ function salvarTodosPontos(d) {
     var lat = parseFloat(r.lat) || 0;
     var lng = parseFloat(r.lng) || 0;
     if (!nome || !lat) continue;
-    // Extract zona from emoji prefix
     var zona = extrairZonaDoEmoji(nome);
     var emoji = extrairEmoji(nome);
-    processados.push([nome, lat, lng, zona, emoji]);
+    processados.push([nome, lat, lng, zona, emoji, cidadeAtual]);
   }
 
   if (processados.length > 0) {
-    aba.getRange(2,1,processados.length,COLUNAS.length).setValues(processados);
+    aba.getRange(aba.getLastRow()+1,1,processados.length,COLUNAS.length).setValues(processados);
   }
 
-  // Track in Indice_Config
   var abaIC = garantirAba(ss, "Indice_Config", ["Tipo","Descricao","Total","ImportadoEm","Cidade"]);
   var agoraIC = Utilities.formatDate(new Date(), "America/Sao_Paulo", "dd/MM/yyyy HH:mm");
   if (abaIC.getLastRow() >= 2) {
     var valsIC = abaIC.getDataRange().getValues();
     for (var ic = valsIC.length - 1; ic >= 1; ic--) {
-      if (String(valsIC[ic][0]) === "todos_pontos" && String(valsIC[ic][4]) === String(d.cidade || "")) {
+      if (String(valsIC[ic][0]) === "todos_pontos" && String(valsIC[ic][4]) === cidadeAtual) {
         abaIC.deleteRow(ic + 1);
       }
     }
   }
-  abaIC.appendRow(["todos_pontos", "Todos os Pontos/Estacionamentos", processados.length, agoraIC, d.cidade || ""]);
+  abaIC.appendRow(["todos_pontos", "Todos os Pontos/Estacionamentos", processados.length, agoraIC, cidadeAtual]);
 
   return respJson({ok:true, msg:processados.length + " pontos salvos", total:processados.length});
 }
@@ -1667,28 +1696,22 @@ function buscarPontosGoJet(d) {
 }
 
 function _salvarPontosGoJetCache(pontos, cidade) {
-  // Salvar na aba Todos_Pontos para que o dashboard use automaticamente
   var ss = obterPlanilha();
-  var COLUNAS = ["nome","lat","lng","zona","emoji"];
-  var abaExist = ss.getSheetByName("Todos_Pontos");
-  if (abaExist) ss.deleteSheet(abaExist);
-  var aba = ss.insertSheet("Todos_Pontos");
-  aba.appendRow(COLUNAS);
-  aba.getRange(1,1,1,COLUNAS.length).setBackground("#1e3a5f").setFontColor("#fff").setFontWeight("bold");
-  aba.setFrozenRows(1);
+  var COLUNAS = ["nome","lat","lng","zona","emoji","Cidade"];
+  var aba = garantirAbaSchema(ss, "Todos_Pontos", COLUNAS);
+  _removerConfigCidade(aba, cidade, 6);
 
   var rows = [];
   for (var i = 0; i < pontos.length; i++) {
     var p = pontos[i];
     var zona = extrairZonaDoEmoji(p.nome);
     var emoji = extrairEmoji(p.nome);
-    rows.push([p.nome, p.lat, p.lng, zona, emoji]);
+    rows.push([p.nome, p.lat, p.lng, zona, emoji, cidade]);
   }
   if (rows.length > 0) {
-    aba.getRange(2,1,rows.length,COLUNAS.length).setValues(rows);
+    aba.getRange(aba.getLastRow()+1,1,rows.length,COLUNAS.length).setValues(rows);
   }
 
-  // Track in Indice_Config
   var abaIC = garantirAba(ss, "Indice_Config", ["Tipo","Descricao","Total","ImportadoEm","Cidade"]);
   var agoraIC = Utilities.formatDate(new Date(), "America/Sao_Paulo", "dd/MM/yyyy HH:mm");
   if (abaIC.getLastRow() >= 2) {
@@ -1769,14 +1792,18 @@ function _getCidadesGoJetMap() {
 // ================================================================
 //  CARREGAR TODOS OS PONTOS (le da aba Todos_Pontos)
 // ================================================================
-function carregarTodosPontos() {
+function carregarTodosPontos(d) {
+  d = d || {};
+  var cidadeAtual = String(d.cidade || "");
   var ss = obterPlanilha();
   var aba = ss.getSheetByName("Todos_Pontos");
   if (!aba || aba.getLastRow() < 2) return respJson({ok:true, pontos:[], total:0});
   var vals = aba.getDataRange().getValues();
   var pontos = [];
   for (var i = 1; i < vals.length; i++) {
-    pontos.push({nome:String(vals[i][0]), lat:parseFloat(vals[i][1])||0, lng:parseFloat(vals[i][2])||0, zona:String(vals[i][3]||""), emoji:String(vals[i][4]||"")});
+    var cidadeLinha = String(vals[i][5] || "");
+    if (!_cidadeConfigMatch(cidadeLinha, cidadeAtual)) continue;
+    pontos.push({nome:String(vals[i][0]), lat:parseFloat(vals[i][1])||0, lng:parseFloat(vals[i][2])||0, zona:String(vals[i][3]||""), emoji:String(vals[i][4]||""), cidade:cidadeLinha});
   }
   return respJson({ok:true, pontos:pontos, total:pontos.length});
 }
@@ -1785,7 +1812,9 @@ function carregarTodosPontos() {
 //  CARREGAR PONTOS CONFIG (le da aba Pontos_Config e organiza)
 //  Retorna: { dia:[], noite:[], fds:[] }
 // ================================================================
-function carregarPontosConfig() {
+function carregarPontosConfig(d) {
+  d = d || {};
+  var cidadeAtual = String(d.cidade || "");
   var ss = obterPlanilha();
   var aba = ss.getSheetByName("Pontos_Config");
   if (!aba || aba.getLastRow() < 2) return respJson({ok:true, dia:[], noite:[], fds:[], total:0});
@@ -1799,9 +1828,10 @@ function carregarPontosConfig() {
     var lng = parseFloat(vals[i][2]) || 0;
     var cap = parseInt(vals[i][3]) || 0;
     var schedule = String(vals[i][4] || "").toLowerCase();
-    if (!nome) continue;
+    var cidadeLinha = String(vals[i][5] || "");
+    if (!nome || !_cidadeConfigMatch(cidadeLinha, cidadeAtual)) continue;
 
-    var ponto = {endereco:nome, lat:lat, lng:lng, capacidade:cap, zona:"CSV", schedule:schedule};
+    var ponto = {endereco:nome, lat:lat, lng:lng, capacidade:cap, zona:"CSV", schedule:schedule, cidade:cidadeLinha};
     if (schedule === "weekday-morning") dia.push(ponto);
     else if (schedule === "weekday-evening") noite.push(ponto);
     else if (schedule === "weekend") fds.push(ponto);
@@ -2451,7 +2481,6 @@ function deletarConfig(d) {
 
   var ss = obterPlanilha();
 
-  // Remove from Indice_Config
   var aba = ss.getSheetByName("Indice_Config");
   if (aba && aba.getLastRow() >= 2) {
     var vals = aba.getDataRange().getValues();
@@ -2462,60 +2491,22 @@ function deletarConfig(d) {
     }
   }
 
-  // Remove the associated data sheet
-  var abasParaDeletar = [];
-  if (tipo === "pontos_monitor") {
-    abasParaDeletar.push("Pontos_Config");
-  } else if (tipo === "todos_pontos") {
-    abasParaDeletar.push("Todos_Pontos");
-  } else if (tipo === "zonas") {
-    abasParaDeletar.push("Zonas_Config");
-  }
+  var cfg = null;
+  if (tipo === "pontos_monitor") cfg = {sheet:"Pontos_Config", cidadeCol:6};
+  else if (tipo === "todos_pontos") cfg = {sheet:"Todos_Pontos", cidadeCol:6};
+  else if (tipo === "zonas") cfg = {sheet:"Zonas_Config", cidadeCol:5};
 
-  for (var j = 0; j < abasParaDeletar.length; j++) {
-    var abaDel = ss.getSheetByName(abasParaDeletar[j]);
-    if (abaDel) {
-      try { ss.deleteSheet(abaDel); } catch(e) {}
+  if (cfg) {
+    var abaCfg = ss.getSheetByName(cfg.sheet);
+    if (abaCfg) {
+      if (cidade) _removerConfigCidade(abaCfg, cidade, cfg.cidadeCol);
+      else { try { ss.deleteSheet(abaCfg); } catch(e) {} }
     }
   }
 
-  return respJson({ok:true, msg:"Configuracao deletada"});
+  return respJson({ok:true, msg:"Configuracao removida"});
 }
 
-function buscarMunicipios(d) {
-  var uf = String(d.uf || "");
-  if (!uf) return respJson({ok:false, msg:"UF nao informada"});
-  try {
-    var url = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/" + uf + "/municipios?orderBy=nome";
-    var options = {
-      method: "get",
-      muteHttpExceptions: true,
-      headers: { "Accept": "application/json" },
-      followRedirects: true
-    };
-    var response = UrlFetchApp.fetch(url, options);
-    var code = response.getResponseCode();
-    var text = response.getContentText();
-    if (code !== 200) {
-      return respJson({ok:false, msg:"IBGE retornou status " + code, fallback:true});
-    }
-    var json = JSON.parse(text);
-    if (!json || !json.length) {
-      return respJson({ok:false, msg:"Nenhum municipio encontrado para " + uf, fallback:true});
-    }
-    var municipios = [];
-    for (var i = 0; i < json.length; i++) {
-      municipios.push(String(json[i].nome || ""));
-    }
-    return respJson({ok:true, municipios:municipios, uf:uf, total:municipios.length});
-  } catch(e) {
-    return respJson({ok:false, msg:"Erro IBGE: " + String(e), fallback:true});
-  }
-}
-
-// ================================================================
-//  CIDADES - Cadastro e Gerenciamento
-// ================================================================
 function _codigoCidade(cidadeCompleta) {
   // "São Paulo/SP" -> "SaoPaulo_SP"
   if (!cidadeCompleta) return "";

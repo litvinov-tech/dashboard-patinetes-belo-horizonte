@@ -1792,7 +1792,7 @@ function toggleZonasOnMapMov() {
 }
 
 function loadZonasFromBackend(cb) {
-  postScript({acao:'carregarZonas'}).then(function(r) {
+  postScript({acao:'carregarZonas', cidade:getSelectedCity()}).then(function(r) {
     if (r.ok && r.zonas && r.zonas.length) {
       zonasGeo = r.zonas.map(function(z) {
         z.polygon = parseWKT(z.wkt);
@@ -4859,26 +4859,29 @@ function renderZonaBreakdown(pontos, bloco) {
   var zonas = {};
   pontos.forEach(function(p){
     var z = p.zona || 'Sem Zona';
-    if (!zonas[z]) zonas[z] = {monDia:0,monNoite:0,nao:0,total:0};
+    if (!zonas[z]) zonas[z] = {monDia:0,monNoite:0,monUnique:0,nao:0,total:0};
     var v = getVal(p);
-    if (p.tipoMonitor==='Monitor DIA' || p.tipoMonitor==='Monitor AMBOS') zonas[z].monDia += v;
-    if (p.tipoMonitor==='Monitor NOITE' || p.tipoMonitor==='Monitor AMBOS') zonas[z].monNoite += v;
-    if (p.tipoMonitor==='NAO MONITOR') zonas[z].nao += v;
+    if (!v) return;
+    if (p.tipoMonitor==='Monitor DIA') { zonas[z].monDia += v; zonas[z].monUnique += v; }
+    else if (p.tipoMonitor==='Monitor NOITE') { zonas[z].monNoite += v; zonas[z].monUnique += v; }
+    else if (p.tipoMonitor==='Monitor AMBOS') { zonas[z].monDia += v; zonas[z].monNoite += v; zonas[z].monUnique += v; }
+    else if (p.tipoMonitor==='Monitor FDS') { zonas[z].monUnique += v; }
+    else if (p.tipoMonitor==='NAO MONITOR') { zonas[z].nao += v; }
     zonas[z].total += v;
   });
   var zKeys = Object.keys(zonas).sort();
   if (!zKeys.length) { el.innerHTML=''; return; }
   var periodLabel = bloco==='dia'?' (DIA)':bloco==='noite'?' (NOITE)':'';
-  var html = '<div class="tbl-wrap"><div style="padding:10px 16px;border-bottom:1px solid var(--bdr);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim)">Movimentacoes por Zona - Monitor vs Nao Monitor'+periodLabel+'</div><table><thead><tr><th>Zona</th><th>Total</th><th>Monitor DIA</th><th>Monitor NOITE</th><th>Nao Monitor</th><th>% Monitor</th><th>Visual</th></tr></thead><tbody>';
+  var html = '<div class="tbl-wrap"><div style="padding:10px 16px;border-bottom:1px solid var(--bdr);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim)">Movimentacoes por Zona - Monitor vs Nao Monitor'+periodLabel+'</div><table><thead><tr><th>Zona</th><th>Total</th><th>Monitor Total</th><th>Monitor DIA</th><th>Monitor NOITE</th><th>Nao Monitor</th><th>% Monitor</th><th>Visual</th></tr></thead><tbody>';
   zKeys.forEach(function(z){
     var d = zonas[z];
-    var monTotal = d.monDia + d.monNoite;
-    var pct = d.total > 0 ? (monTotal / d.total * 100) : 0;
+    var pct = d.total > 0 ? (d.monUnique / d.total * 100) : 0;
     var pctColor = pct >= 70 ? '#4ade80' : pct >= 40 ? '#fbbf24' : '#f87171';
-    var barMon = Math.round(pct);
+    var barMon = Math.max(0, Math.min(100, Math.round(pct)));
     var barNao = 100 - barMon;
     html += '<tr><td class="td-bold">' + esc(z) + '</td>' +
       '<td class="td-bold">' + d.total + '</td>' +
+      '<td><span class="chip mon">' + d.monUnique + '</span></td>' +
       '<td><span class="chip mon-dia">' + d.monDia + '</span></td>' +
       '<td><span class="chip mon-noite">' + d.monNoite + '</span></td>' +
       '<td><span class="chip nmon">' + d.nao + '</span></td>' +
@@ -5014,16 +5017,18 @@ function exportarExcel() {
   var zonas = {};
   currentData.pontos.forEach(function(p){
     var z = p.zona||'Sem Zona';
-    if (!zonas[z]) zonas[z]={monDia:0,monNoite:0,nao:0,total:0};
-    if(p.tipoMonitor==='Monitor DIA') zonas[z].monDia+=p.total;
-    else if(p.tipoMonitor==='Monitor NOITE') zonas[z].monNoite+=p.total;
-    else zonas[z].nao+=p.total;
+    if (!zonas[z]) zonas[z]={monDia:0,monNoite:0,monUnique:0,nao:0,total:0};
+    if(p.tipoMonitor==='Monitor DIA') { zonas[z].monDia+=p.total; zonas[z].monUnique+=p.total; }
+    else if(p.tipoMonitor==='Monitor NOITE') { zonas[z].monNoite+=p.total; zonas[z].monUnique+=p.total; }
+    else if(p.tipoMonitor==='Monitor AMBOS') { zonas[z].monDia+=p.total; zonas[z].monNoite+=p.total; zonas[z].monUnique+=p.total; }
+    else if(p.tipoMonitor==='Monitor FDS') zonas[z].monUnique+=p.total;
+    else if(p.tipoMonitor==='NAO MONITOR') zonas[z].nao+=p.total;
     zonas[z].total+=p.total;
   });
-  var zonaData = [['Zona','Total','Monitor DIA','Monitor NOITE','Nao Monitor','% Monitor']];
+  var zonaData = [['Zona','Total','Monitor Total','Monitor DIA','Monitor NOITE','Nao Monitor','% Monitor']];
   Object.keys(zonas).sort().forEach(function(z){
-    var d=zonas[z]; var pct=d.total>0?((d.monDia+d.monNoite)/d.total*100).toFixed(1):'0';
-    zonaData.push([z, d.total, d.monDia, d.monNoite, d.nao, pct+'%']);
+    var d=zonas[z]; var pct=d.total>0?(d.monUnique/d.total*100).toFixed(1):'0';
+    zonaData.push([z, d.total, d.monUnique, d.monDia, d.monNoite, d.nao, pct+'%']);
   });
   var ws2 = XLSX.utils.aoa_to_sheet(zonaData);
   XLSX.utils.book_append_sheet(wb, ws2, 'Por Zona');
@@ -5079,19 +5084,21 @@ function exportarPDF() {
   var zonas = {};
   currentData.pontos.forEach(function(p){
     var z=p.zona||'Sem Zona';
-    if(!zonas[z]) zonas[z]={monDia:0,monNoite:0,nao:0,total:0};
-    if(p.tipoMonitor==='Monitor DIA') zonas[z].monDia+=p.total;
-    else if(p.tipoMonitor==='Monitor NOITE') zonas[z].monNoite+=p.total;
-    else zonas[z].nao+=p.total;
+    if(!zonas[z]) zonas[z]={monDia:0,monNoite:0,monUnique:0,nao:0,total:0};
+    if(p.tipoMonitor==='Monitor DIA') { zonas[z].monDia+=p.total; zonas[z].monUnique+=p.total; }
+    else if(p.tipoMonitor==='Monitor NOITE') { zonas[z].monNoite+=p.total; zonas[z].monUnique+=p.total; }
+    else if(p.tipoMonitor==='Monitor AMBOS') { zonas[z].monDia+=p.total; zonas[z].monNoite+=p.total; zonas[z].monUnique+=p.total; }
+    else if(p.tipoMonitor==='Monitor FDS') zonas[z].monUnique+=p.total;
+    else if(p.tipoMonitor==='NAO MONITOR') zonas[z].nao+=p.total;
     zonas[z].total+=p.total;
   });
   Object.keys(zonas).sort().forEach(function(z){
-    var d=zonas[z]; var pct=d.total>0?((d.monDia+d.monNoite)/d.total*100).toFixed(1):'0';
-    zonaRows.push([z, String(d.total), String(d.monDia), String(d.monNoite), String(d.nao), pct+'%']);
+    var d=zonas[z]; var pct=d.total>0?(d.monUnique/d.total*100).toFixed(1):'0';
+    zonaRows.push([z, String(d.total), String(d.monUnique), String(d.monDia), String(d.monNoite), String(d.nao), pct+'%']);
   });
   doc.autoTable({
     startY: 20,
-    head: [['Zona','Total','Mon DIA','Mon NOITE','Nao Mon','% Monitor']],
+    head: [['Zona','Total','Mon Total','Mon DIA','Mon NOITE','Nao Mon','% Monitor']],
     body: zonaRows,
     styles: {fontSize:9, cellPadding:2},
     headStyles: {fillColor:[30,58,95], textColor:255}

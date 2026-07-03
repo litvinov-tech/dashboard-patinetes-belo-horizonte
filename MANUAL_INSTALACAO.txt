@@ -1,0 +1,462 @@
+================================================================
+  DASHBOARD PATINETES - MANUAL DE INSTALACAO E USO
+  Versao: v17 | Data: 21/03/2026
+================================================================
+
+================================================================
+  INDICE
+================================================================
+  1. VISAO GERAL
+  2. REQUISITOS
+  3. INSTALACAO PASSO A PASSO
+  4. PRIMEIRA CONFIGURACAO
+  5. ORDEM CORRETA PARA ANEXAR ARQUIVOS
+  6. FORMATOS DOS ARQUIVOS DE UPLOAD
+  7. FUNCIONALIDADES DO DASHBOARD
+  8. SISTEMA DE CIDADES (MULTI-TENANT)
+  9. GERENCIAMENTO DE USUARIOS
+  10. RESOLUCAO DE PROBLEMAS
+
+================================================================
+  1. VISAO GERAL
+================================================================
+
+O Dashboard Patinetes e um sistema web completo para gestao
+de frotas de patinetes eletricos, construido em Google Apps
+Script. Ele permite:
+
+  - Upload e analise de movimentacoes diarias
+  - Upload e analise de trocas de baterias
+  - Mapa interativo com pontos monitores e zonas
+  - Comparativo entre dias (lado a lado)
+  - Comparativos multiplos (varios dias / media)
+  - Gestao de funcionarios (CLT/MEI)
+  - Sistema multi-cidade (cada gerente ve so sua cidade)
+  - Login/senha com controle de acesso
+  - Historico completo com todos os uploads
+
+================================================================
+  2. REQUISITOS
+================================================================
+
+  - Conta Google (Gmail/Google Workspace)
+  - Navegador moderno (Chrome, Edge, Firefox)
+  - Arquivos Excel (.xlsx) de movimentacoes e baterias
+  - Arquivo CSV de pontos monitores
+  - (Opcional) Arquivo CSV de zonas geograficas
+
+================================================================
+  3. INSTALACAO PASSO A PASSO
+================================================================
+
+PASSO 1: Criar o projeto no Google Apps Script
+-----------------------------------------------
+  a) Acesse: https://script.google.com
+  b) Clique em "+ Novo Projeto"
+  c) Renomeie o projeto para "Dashboard Movimentacoes Patinetes"
+
+PASSO 2: Adicionar o arquivo backend (Codigo.gs)
+-------------------------------------------------
+  a) No editor, voce vera um arquivo "Codigo.gs" ja criado
+  b) Apague todo o conteudo existente
+  c) Abra o arquivo "Codigo_Dashboard.gs" deste pacote
+  d) Copie TODO o conteudo e cole no editor
+  e) Salve (Ctrl+S)
+
+PASSO 3: Adicionar o arquivo frontend (dashboard.html)
+-------------------------------------------------------
+  a) No menu lateral, clique em "+" ao lado de "Arquivos"
+  b) Selecione "HTML"
+  c) Nomeie como "dashboard" (sem .html, o sistema adiciona)
+  d) Apague o conteudo padrao
+  e) Abra o arquivo "dashboard.html" deste pacote
+  f) Copie TODO o conteudo e cole no editor
+  g) Salve (Ctrl+S)
+
+PASSO 4: Autorizar permissoes
+------------------------------
+  a) No topo do editor, no seletor de funcoes, escolha "autorizar"
+  b) Clique em "Executar" (botao play)
+  c) Aparecera pop-up "Autorizacao necessaria" - clique "Revisar permissoes"
+  d) Selecione sua conta Google
+  e) Clique "Avancado" > "Acessar Dashboard Movimentacoes (nao seguro)"
+  f) Clique "Permitir"
+  g) IMPORTANTE: No log deve aparecer "IBGE OK! Status: 200"
+     Isso confirma que a API de cidades esta funcionando
+  h) Se aparecer erro de permissao, execute "autorizar" novamente
+
+PASSO 5: Implantar como Web App
+---------------------------------
+  a) Clique em "Implantar" > "Nova implantacao"
+  b) Em "Tipo", selecione "App da Web"
+  c) Descricao: "Dashboard Patinetes v17"
+  d) Executar como: "Eu" (sua conta)
+  e) Quem tem acesso: "Qualquer pessoa"
+  f) Clique "Implantar"
+  g) Copie o URL gerado - esse e o link do seu dashboard!
+
+PASSO 6: Acessar o dashboard
+------------------------------
+  a) Abra o URL copiado no navegador
+  b) Faca login com as credenciais padrao:
+     Usuario: admin
+     Senha:   admin123
+  c) IMPORTANTE: Troque a senha imediatamente apos o primeiro login!
+
+================================================================
+  4. PRIMEIRA CONFIGURACAO
+================================================================
+
+Apos instalar, siga esta ordem para configurar:
+
+  1. TROCAR SENHA DO ADMIN
+     - Clique no seu nome no canto superior direito
+     - Selecione "Alterar Senha"
+     - Digite a nova senha e confirme
+
+  2. CADASTRAR CIDADES
+     - Va na aba "Cidades"
+     - Selecione o Estado
+     - Selecione a Cidade na lista do IBGE
+     - Clique "Cadastrar Cidade"
+     - Repita para todas as cidades necessarias
+
+  3. CRIAR USUARIOS (GERENTES)
+     - No menu do usuario, clique "Gerenciar Usuarios"
+     - Crie um usuario para cada gerente
+     - Na aba "Cidades", atribua as cidades de cada usuario
+
+  4. FAZER UPLOADS (veja secao 5 abaixo)
+
+================================================================
+  5. ORDEM CORRETA PARA ANEXAR ARQUIVOS
+================================================================
+
+  *** ATENCAO: A ORDEM IMPORTA! ***
+
+  Siga EXATAMENTE esta sequencia para evitar erros:
+
+  ---------------------------------------------------------------
+  ETAPA 1: PONTOS MONITORES (fazer UMA VEZ por cidade)
+  ---------------------------------------------------------------
+
+  Aba: Upload / Historico > Upload
+  Secao: "Pontos Monitores"
+
+  O que e: Arquivo CSV com todos os pontos de estacionamento
+  que sao monitorados. Sem este arquivo, o dashboard NAO
+  consegue calcular as metricas de eficiencia.
+
+  Formato CSV esperado:
+  city_id;city_name;schedule_id;schedule_name;parking_id;parking_name;lat;lng;capacity
+
+  Exemplo:
+  1;Sao Paulo;1;weekday-morning;101;Av Paulista 1000;-23.5617;-46.6560;4
+  1;Sao Paulo;2;weekday-evening;101;Av Paulista 1000;-23.5617;-46.6560;4
+
+  Campos schedule_name aceitos:
+    - weekday-morning = Periodo DIA (0h-12h)
+    - weekday-evening = Periodo NOITE (12h-24h)
+    - weekend = Final de Semana
+
+  COMO FAZER:
+    a) Selecione o Estado e Cidade
+    b) Selecione a data
+    c) Arraste o arquivo CSV ou clique para selecionar
+    d) Aguarde a mensagem de sucesso
+
+  ---------------------------------------------------------------
+  ETAPA 2: TODOS OS PONTOS (fazer UMA VEZ por cidade)
+  ---------------------------------------------------------------
+
+  Secao: "Todos os Pontos / Estacionamentos"
+
+  O que e: Arquivo Excel com TODOS os estacionamentos da cidade
+  (monitores e nao-monitores). Usado no mapa e para enriquecer
+  as informacoes dos patinetes.
+
+  Formato XLSX esperado:
+  Nome (ou Наименование) | LAT | LNG
+
+  Exemplo:
+  Av Paulista 1000 | -23.5617 | -46.6560
+  R Augusta 500    | -23.5550 | -46.6620
+
+  ---------------------------------------------------------------
+  ETAPA 3: MAPA DE ZONAS (OPCIONAL, fazer UMA VEZ por cidade)
+  ---------------------------------------------------------------
+
+  Secao: "Mapa da Cidade - Zonas"
+
+  O que e: Arquivo CSV com poligonos de zonas geograficas
+  para classificar movimentacoes por regiao no mapa.
+
+  Formato CSV esperado:
+  Nome;WKT
+
+  Exemplo:
+  Zona Centro;POLYGON((-46.65 -23.54,-46.64 -23.54,-46.64 -23.55,-46.65 -23.55,-46.65 -23.54))
+  Zona Sul;POLYGON((...))
+
+  ---------------------------------------------------------------
+  ETAPA 4: MOVIMENTACOES (DIARIO)
+  ---------------------------------------------------------------
+
+  Secao: "Arquivo de Movimentacoes (.xlsx)"
+
+  O que e: Arquivo Excel com os dados de coleta e entrega
+  de patinetes do dia.
+
+  *** IMPORTANTE: Anexe os Pontos Monitores ANTES de anexar
+  as movimentacoes! Sem os pontos, os calculos de "EM PONTO
+  MONITOR" e "% EFICIENCIA" serao todos ZERO. ***
+
+  Formato XLSX esperado (colunas):
+    - Patinete (ou Самокат): ID do patinete (ex: S.123456)
+    - Hora Coleta: Horario da coleta (ex: 08:30)
+    - Hora Entrega: Horario da entrega (ex: 09:15)
+    - LAT Coleta: Latitude da coleta
+    - LNG Coleta: Longitude da coleta
+    - LAT Entrega: Latitude da entrega
+    - LNG Entrega: Longitude da entrega
+    - Responsavel: Nome do operador
+
+  COMO FAZER:
+    a) Selecione o Estado e Cidade correspondentes
+    b) Selecione a DATA do arquivo
+    c) Arraste o arquivo .xlsx ou clique para selecionar
+    d) Aguarde o processamento (pode levar alguns segundos)
+    e) O dashboard sera carregado automaticamente
+
+  ---------------------------------------------------------------
+  ETAPA 5: BATERIAS (DIARIO)
+  ---------------------------------------------------------------
+
+  Secao: "Arquivo de Baterias (.xlsx)"
+
+  O que e: Arquivo Excel com os dados de trocas de bateria
+  do dia.
+
+  Formato XLSX esperado (colunas):
+    - Patinete (ou Самокат): ID do patinete
+    - Hora: Horario da troca
+    - Carga Inicial: Nivel de bateria antes (%)
+    - Carga Final: Nivel de bateria apos (%)
+    - LAT: Latitude
+    - LNG: Longitude
+    - Responsavel: Nome do operador
+
+  COMO FAZER:
+    a) Selecione o Estado e Cidade correspondentes
+    b) Selecione a DATA do arquivo
+    c) Arraste o arquivo .xlsx ou clique para selecionar
+    d) Aguarde a mensagem de sucesso
+
+
+================================================================
+  RESUMO DA ORDEM DE UPLOAD:
+================================================================
+
+  +------+-----------------------------------+-------------+
+  | PASSO| ARQUIVO                           | FREQUENCIA  |
+  +------+-----------------------------------+-------------+
+  | 1    | Pontos Monitores (.csv)           | 1x por cidade|
+  | 2    | Todos os Pontos (.xlsx)           | 1x por cidade|
+  | 3    | Zonas Geograficas (.csv)          | 1x por cidade|
+  | 4    | Movimentacoes (.xlsx)             | DIARIO      |
+  | 5    | Baterias (.xlsx)                  | DIARIO      |
+  +------+-----------------------------------+-------------+
+
+  Os passos 1, 2 e 3 so precisam ser feitos UMA VEZ para
+  cada cidade. Apos isso, basta anexar os arquivos 4 e 5
+  diariamente.
+
+================================================================
+  6. FORMATOS DOS ARQUIVOS DE UPLOAD
+================================================================
+
+  MOVIMENTACOES (.xlsx):
+  Colunas obrigatorias: Patinete, Hora Coleta, Hora Entrega,
+  LAT Coleta, LNG Coleta, LAT Entrega, LNG Entrega, Responsavel
+  Aceita tambem colunas em russo (Самокат, etc.)
+
+  BATERIAS (.xlsx):
+  Colunas: Patinete, Hora, Carga Inicial, Carga Final, LAT, LNG,
+  Responsavel
+
+  PONTOS MONITORES (.csv):
+  Separador: ponto-e-virgula (;)
+  Colunas: city_id;city_name;schedule_id;schedule_name;
+  parking_id;parking_name;lat;lng;capacity
+
+  TODOS OS PONTOS (.xlsx):
+  Colunas: Nome (ou Наименование), LAT, LNG
+
+  ZONAS (.csv):
+  Separador: ponto-e-virgula (;)
+  Colunas: Nome;WKT
+  WKT = formato POLYGON((...))
+
+================================================================
+  7. FUNCIONALIDADES DO DASHBOARD
+================================================================
+
+  ABA: UPLOAD / HISTORICO
+  -----------------------
+  - Upload: Anexar todos os tipos de arquivo com selecao
+    de Estado e Cidade
+  - Historico: Ver todos os dias importados, com resumo de
+    KPIs, separados por tipo (Movimentacoes e Baterias).
+    Botoes "Abrir" e "Deletar" para cada registro.
+
+  ABA: MOVIMENTACOES
+  -------------------
+  - Dashboard: KPIs principais (Total, Monitor, Eficiencia),
+    graficos de barras por hora (Monitor/Turno), tabela de
+    pontos monitor
+  - Pontos: Lista detalhada de pontos com contagem
+  - Mapa: Mapa Leaflet com marcadores de coleta/entrega
+    e overlay de zonas geograficas
+  - Comparativo: Comparacao lado a lado entre dois dias com
+    dashboards completos e diferencas percentuais
+  - Equipe: Performance por responsavel
+  - Mapa Movimentos: Linhas de movimentacao coleta->entrega
+
+  ABA: BATERIAS
+  --------------
+  - Dashboard de trocas de bateria por turno/bloco
+  - Graficos de distribuicao
+  - KPIs de carga inicial/final
+
+  ABA: COMPARATIVOS MULTIPLOS
+  ----------------------------
+  - Varios Dias: Selecione multiplos dias para comparar
+    em tabela e graficos lado a lado
+  - Media de Dias: Calcule a media entre varios dias
+  - Suporta tanto movimentacoes quanto baterias
+
+  ABA: FUNCIONARIOS
+  ------------------
+  - Cadastro de funcionarios (CLT e MEI)
+  - Separacao por tipo de contrato
+  - Listagem completa
+
+  ABA: CIDADES (somente admin)
+  -----------------------------
+  - Cadastrar novas cidades (Estado > Cidade via API IBGE)
+  - Ver cidades cadastradas
+  - Atribuir cidades a usuarios
+  - Editar/excluir atribuicoes
+
+================================================================
+  8. SISTEMA DE CIDADES (MULTI-TENANT)
+================================================================
+
+  O sistema suporta multiplas cidades independentes:
+
+  COMO FUNCIONA:
+  - Cada usuario pertence a 1 ou mais cidades
+  - Ao fazer upload, seleciona Estado e Cidade
+  - Os dados ficam salvos vinculados aquela cidade
+  - No historico, aparece o nome da cidade de cada arquivo
+  - Cada usuario so ve os dados das suas cidades
+  - O admin ve TODAS as cidades
+
+  CONFIGURANDO:
+  1. Cadastre as cidades na aba "Cidades"
+  2. Crie os usuarios em "Gerenciar Usuarios"
+  3. Atribua cidades aos usuarios na aba "Cidades"
+
+  NOMES DAS ABAS NO GOOGLE SHEETS:
+  Os dados ficam em abas com o nome da cidade:
+  - Mov_SaoPaulo_SP_20260320 (movimentacoes)
+  - Bat_SaoPaulo_SP_20260320 (baterias)
+  - Historico (com coluna Cidade)
+
+================================================================
+  9. GERENCIAMENTO DE USUARIOS
+================================================================
+
+  PERFIS:
+  - admin: Acesso total, pode ver todas as cidades,
+    gerenciar usuarios e cidades
+  - usuario: Acesso restrito as suas cidades atribuidas
+
+  LOGIN PADRAO:
+  - Usuario: admin
+  - Senha: admin123
+  *** TROQUE A SENHA IMEDIATAMENTE APOS A INSTALACAO! ***
+
+  CRIAR USUARIO:
+  - Menu do usuario (canto superior direito) > Gerenciar Usuarios
+  - Preencha usuario, senha e perfil
+  - Clique "Criar"
+
+  ATRIBUIR CIDADES:
+  - Aba "Cidades" > secao "Atribuir Cidades a Usuarios"
+  - Marque as cidades para cada usuario
+  - Clique "Salvar"
+
+  SESSAO:
+  - Token valido por 12 horas
+  - Apos expirar, faca login novamente
+  - Sessao armazenada no navegador (sessionStorage)
+
+================================================================
+  10. RESOLUCAO DE PROBLEMAS
+================================================================
+
+  PROBLEMA: "Erro" no dropdown de cidades
+  CAUSA: API do IBGE nao autorizada
+  SOLUCAO: Execute a funcao "autorizar" no Apps Script e
+  aceite TODAS as permissoes. No log deve aparecer
+  "IBGE OK! Status: 200"
+
+  PROBLEMA: KPIs mostrando 0% ou EFICIENCIA = 0
+  CAUSA: Pontos Monitores nao carregados
+  SOLUCAO: Anexe o arquivo CSV de Pontos Monitores ANTES
+  de importar as movimentacoes
+
+  PROBLEMA: Historico de movimentacoes nao carrega / loading infinito
+  CAUSA: Bug em versoes antigas (corrigido na v17)
+  SOLUCAO: Use esta versao atualizada
+
+  PROBLEMA: Grafico "Movimentacoes por Hora" vazio
+  CAUSA: Datas no formato Date do Google Sheets
+  SOLUCAO: Corrigido nesta versao - o backend converte
+  automaticamente
+
+  PROBLEMA: Sessao expirada constantemente
+  CAUSA: Token expira em 12 horas
+  SOLUCAO: Faca login novamente. O token e renovado a
+  cada login.
+
+  PROBLEMA: Usuario nao consegue ver dados
+  CAUSA: Cidades nao atribuidas ao usuario
+  SOLUCAO: Admin deve atribuir cidades ao usuario na
+  aba "Cidades"
+
+  PROBLEMA: "Acao desconhecida" ao importar
+  CAUSA: Versao do backend desatualizada
+  SOLUCAO: Certifique-se de que o Codigo_Dashboard.gs esta
+  completo e reimplante como nova versao
+
+  PROBLEMA: Lentidao ao carregar dashboard
+  CAUSA: Muitos dados ou conexao lenta
+  SOLUCAO: Normal para arquivos grandes. O sistema usa
+  cache para acelerar consultas subsequentes.
+
+================================================================
+  SUPORTE
+================================================================
+
+  Arquivos deste pacote:
+  - Codigo_Dashboard.gs  (backend - Google Apps Script)
+  - dashboard.html       (frontend - interface completa)
+  - MANUAL_INSTALACAO.txt (este manual)
+
+  Versao: v17 (21/03/2026)
+  Funcionalidades: Upload, Dashboard, Baterias, Comparativos,
+  Multi-cidade, Login/Senha, Zonas, Funcionarios
+
+================================================================

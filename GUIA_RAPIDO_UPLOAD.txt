@@ -1,0 +1,100 @@
+================================================================
+  GUIA RAPIDO - ORDEM DE UPLOAD DOS ARQUIVOS
+  Dashboard Patinetes v17
+================================================================
+
+
+  *** PRIMEIRA VEZ (configuracao da cidade) ***
+
+  Faca os passos 1, 2 e 3 ANTES de importar dados diarios.
+  So precisam ser feitos UMA VEZ por cidade.
+
+
+  PASSO 1: PONTOS MONITORES (.csv)
+  ----------------------------------
+  > Upload > Pontos Monitores
+  > Selecione: Estado + Cidade + Data
+  > Arraste o CSV de pontos monitores
+
+  Formato: city_id;city_name;schedule_id;schedule_name;
+           parking_id;parking_name;lat;lng;capacity
+
+  SEM ESTE ARQUIVO, EFICIENCIA = 0% !!!
+
+
+  PASSO 2: TODOS OS PONTOS (.xlsx)
+  ----------------------------------
+  > Upload > Todos os Pontos / Estacionamentos
+  > Selecione: Estado + Cidade + Data
+  > Arraste o XLSX com todos os pontos
+
+  Formato: Nome | LAT | LNG
+
+
+  PASSO 3: ZONAS (.csv) [OPCIONAL]
+  ----------------------------------
+  > Upload > Mapa da Cidade - Zonas
+  > Selecione: Estado + Cidade + Data
+  > Arraste o CSV de zonas
+
+  Formato: Nome;WKT (POLYGON)
+
+
+================================================================
+
+  *** ROTINA DIARIA ***
+
+  Faca estes passos TODO DIA:
+
+
+  PASSO 4: MOVIMENTACOES (.xlsx)
+  --------------------------------
+  > Upload > Arquivo de Movimentacoes
+  > Selecione: Estado + Cidade + Data do arquivo
+  > Arraste o XLSX de movimentacoes
+  > Aguarde processar - dashboard abre automatico
+
+  Colunas: Patinete, Hora Coleta, Hora Entrega,
+  LAT/LNG Coleta, LAT/LNG Entrega, Responsavel
+
+
+  PASSO 5: BATERIAS (.xlsx)
+  ---------------------------
+  > Upload > Arquivo de Baterias
+  > Selecione: Estado + Cidade + Data do arquivo
+  > Arraste o XLSX de baterias
+  > Aguarde confirmar sucesso
+
+  Colunas: Patinete, Hora, Carga Inicial,
+  Carga Final, LAT, LNG, Responsavel
+
+
+================================================================
+
+  RESUMO VISUAL:
+
+  1x POR CIDADE          DIARIO
+  +-----------------+    +-------------------+
+  | Pontos Monitor  |    | Movimentacoes     |
+  | Todos os Pontos |    | Baterias          |
+  | Zonas (opcional)|    |                   |
+  +-----------------+    +-------------------+
+        |                       |
+        v                       v
+   CONFIGURACAO           DADOS DO DIA
+   (so 1 vez)            (todo dia)
+
+================================================================
+
+  DICAS IMPORTANTES:
+
+  * Sempre selecione a CIDADE CORRETA antes de anexar!
+  * A DATA deve corresponder ao dia do arquivo
+  * Pontos Monitores DEVEM ser carregados antes das
+    movimentacoes para os KPIs funcionarem
+  * Se trocar de cidade, selecione a nova cidade antes
+    de anexar o proximo arquivo
+  * Verifique o historico para confirmar que o upload
+    foi salvo corretamente
+
+================================================================

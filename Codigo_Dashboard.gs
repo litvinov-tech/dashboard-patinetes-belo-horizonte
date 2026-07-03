@@ -17,9 +17,10 @@ function _carregarPontosMonitor() {
   var ss = obterPlanilha();
   var aba = ss.getSheetByName("Pontos_Config");
   var dia = [], noite = [], fds = [], all = [];
+  var todosPontos = {};
   // Lookup: normalizedKey → {dia:bool, noite:bool, fds:bool}
   var membership = {};
-  if (!aba || aba.getLastRow() < 2) return {dia:dia, noite:noite, fds:fds, all:all, membership:membership};
+  if (!aba || aba.getLastRow() < 2) return {dia:dia, noite:noite, fds:fds, all:all, membership:membership, todosPontos:todosPontos};
   var vals = aba.getDataRange().getValues();
   for (var i = 1; i < vals.length; i++) {
     var nome = String(vals[i][0] || "");
@@ -39,7 +40,6 @@ function _carregarPontosMonitor() {
   }
 
   // Load Todos_Pontos for name/zona enrichment
-  var todosPontos = {};
   var abaTodos = ss.getSheetByName("Todos_Pontos");
   if (abaTodos && abaTodos.getLastRow() >= 2) {
     var valsTodos = abaTodos.getDataRange().getValues();
@@ -401,10 +401,10 @@ function importarDados(d) {
 
   // Carregar pontos monitor do CSV (Pontos_Config sheet)
   var _pm = _carregarPontosMonitor();
-  var PONTOS_ALL = _pm.all;
-  var MEMBERSHIP = _pm.membership;
+  var PONTOS_ALL = _pm.all || [];
+  var MEMBERSHIP = _pm.membership || {};
   var semPontosMonitor = (PONTOS_ALL.length === 0);
-  var TODOS_PONTOS = _pm.todosPontos;
+  var TODOS_PONTOS = _pm.todosPontos || {};
 
   var processados = [];
   var registrosParaEficiencia = [];

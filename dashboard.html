@@ -389,7 +389,7 @@ tbody td{padding:8px 12px;font-size:12px;white-space:nowrap}
           <option value="Monitor NOITE">Monitor NOITE</option>
           <option value="Monitor AMBOS">Monitor AMBOS</option>
           <option value="OFICINA">Oficina</option>
-          <option value="NAO MONITOR">Nao Monitor</option>
+          <option value="NAO MONITOR">Fora Monitor</option>
         </select>
         <select class="f" id="f-responsavel" onchange="renderDashFiltered()">
           <option value="">Todos responsaveis</option>
@@ -429,7 +429,7 @@ tbody td{padding:8px 12px;font-size:12px;white-space:nowrap}
           <option value="Monitor NOITE">Monitor NOITE</option>
           <option value="Monitor AMBOS">Monitor AMBOS</option>
           <option value="OFICINA">Oficina</option>
-          <option value="NAO MONITOR">Nao Monitor</option>
+          <option value="NAO MONITOR">Fora Monitor</option>
         </select>
         <span class="res-count" id="pontos-count"></span>
       </div>
@@ -449,7 +449,7 @@ tbody td{padding:8px 12px;font-size:12px;white-space:nowrap}
           <option value="Monitor NOITE">Monitor NOITE</option>
           <option value="Monitor AMBOS">Monitor AMBOS</option>
           <option value="OFICINA">Oficina</option>
-          <option value="NAO MONITOR">Nao Monitor</option>
+          <option value="NAO MONITOR">Fora Monitor</option>
         </select>
         <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim);cursor:pointer;margin-left:auto">
           <input type="checkbox" id="fm-zonas-toggle" checked onchange="toggleZonasOnMap()"> <span data-i18n="mostrar_zonas">Mostrar Zonas</span>
@@ -463,7 +463,7 @@ tbody td{padding:8px 12px;font-size:12px;white-space:nowrap}
         <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:#3b82f6;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_monitor_ambos">Monitor AMBOS</span></span>
         <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:#8b5cf6;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_monitor_fds">Monitor FDS</span></span>
         <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:#fb923c;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_oficina">Oficina</span></span>
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:#f87171;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_nao_monitor">Nao Monitor</span></span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:#f87171;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_nao_monitor">Fora Monitor</span></span>
       </div>
     </div>
   </div>
@@ -591,7 +591,7 @@ tbody td{padding:8px 12px;font-size:12px;white-space:nowrap}
         <option value="Monitor DIA">Monitor DIA</option>
         <option value="Monitor NOITE">Monitor NOITE</option>
         <option value="Monitor AMBOS">Monitor AMBOS</option>
-        <option value="NAO MONITOR">Nao Monitor</option>
+        <option value="NAO MONITOR">Fora Monitor</option>
         <option value="OFICINA">Oficina</option>
       </select>
       <select id="mapmov-filter-bloco" onchange="renderMapaMovimentos()" style="background:var(--card);color:var(--fg);border:1px solid var(--border);padding:6px 12px;border-radius:8px">
@@ -618,7 +618,7 @@ tbody td{padding:8px 12px;font-size:12px;white-space:nowrap}
       <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px"><span style="width:14px;height:14px;border-radius:50%;background:#fbbf24;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_monitor_dia">Monitor DIA</span></span>
       <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px"><span style="width:14px;height:14px;border-radius:50%;background:#6b7280;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_monitor_noite">Monitor NOITE</span></span>
       <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px"><span style="width:14px;height:14px;border-radius:50%;background:#3b82f6;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_monitor_ambos">Monitor AMBOS</span></span>
-      <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px"><span style="width:14px;height:14px;border-radius:50%;background:#f87171;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_nao_monitor">Nao Monitor</span></span>
+      <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px"><span style="width:14px;height:14px;border-radius:50%;background:#f87171;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_nao_monitor">Fora Monitor</span></span>
       <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px"><span style="width:14px;height:14px;border-radius:50%;background:#fb923c;border:2px solid #fff;display:inline-block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span> <span data-i18n="leg_oficina">Oficina</span></span>
       <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block"></span> Pickup</span>
       <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block"></span> Dropoff</span>
@@ -863,7 +863,7 @@ var TRANSLATIONS = {
     mov_por_zona: 'Movimentacoes por Zona',
     top10_pontos: 'Top 10 Pontos',
     monitor: 'Monitor',
-    nao_monitor: 'Nao Monitor',
+    nao_monitor: 'Fora Monitor',
     total_geral: 'Total Geral',
     // History
     datas_importadas: '&#x1F4C5; Datas Importadas',
@@ -908,7 +908,7 @@ var TRANSLATIONS = {
     leg_monitor_ambos: 'Monitor AMBOS',
     leg_monitor_fds: 'Monitor FDS',
     leg_oficina: 'Oficina',
-    leg_nao_monitor: 'Nao Monitor',
+    leg_nao_monitor: 'Fora Monitor',
     // Funcionarios
     cadastro_func: '&#x1F4DD; Cadastro e Edicao de Funcionarios',
     contrato_label: 'Contrato:',
@@ -952,16 +952,19 @@ var TRANSLATIONS = {
     th_zona: 'Zona',
     th_tipo: 'Tipo',
     th_total: 'Total',
+    th_mov_total: 'Mov. Total',
+    th_mov_dia: 'Mov. DIA',
+    th_mov_noite: 'Mov. NOITE',
     th_manha: 'Manha',
     th_tarde: 'Tarde',
     th_capacidade: 'Capacidade',
-    th_pct_cap: '% Capacidade',
+    th_pct_cap: 'Giro/Cap.',
     th_responsaveis: 'Responsaveis',
     th_nome: 'Nome',
     th_total_mov: 'Total Mov',
     th_monitor_dia: 'Monitor DIA',
     th_monitor_noite: 'Monitor NOITE',
-    th_nao_monitor: 'Nao Monitor',
+    th_nao_monitor: 'Fora Monitor',
     th_pct_monitor: '% Monitor',
     th_tempo_medio: 'Tempo Medio (min)',
     th_ponto_entrega: 'Ponto de Entrega',
@@ -998,7 +1001,7 @@ var TRANSLATIONS = {
     // Geo zona
     mov_zona_geo: 'Movimentacoes por Zona Geografica',
     det_zona_geo: 'Detalhamento por Zona Geografica',
-    mov_zona_mon: 'Movimentacoes por Zona - Monitor vs Nao Monitor',
+    mov_zona_mon: 'Movimentacoes por Zona - Monitor vs Fora Monitor',
     // Equipe KPI
     media_mov_pessoa: 'Media Mov/Pessoa',
     mais_eficiente: 'Mais Eficiente (% Monitor)',
@@ -1015,7 +1018,7 @@ var TRANSLATIONS = {
     dias_bat: 'Dias - Baterias',
     media_de: 'Media de',
     total_por_dia: 'Total por Dia',
-    mon_vs_nmon: 'Monitor vs Nao Monitor',
+    mon_vs_nmon: 'Monitor vs Fora Monitor',
     mov_hora_todos: 'Movimentacoes por Hora - Todos os Dias',
     total_trocas_dia: 'Total Trocas por Dia',
     turnos_por_dia: 'Turnos por Dia',
@@ -1228,10 +1231,13 @@ var TRANSLATIONS = {
     th_zona: 'Zone',
     th_tipo: 'Type',
     th_total: 'Total',
+    th_mov_total: 'Mov. Total',
+    th_mov_dia: 'Mov. DAY',
+    th_mov_noite: 'Mov. NIGHT',
     th_manha: 'Morning',
     th_tarde: 'Afternoon',
     th_capacidade: 'Capacity',
-    th_pct_cap: '% Capacity',
+    th_pct_cap: 'Turnover/Cap.',
     th_responsaveis: 'Responsible',
     th_nome: 'Name',
     th_total_mov: 'Total Mov',
@@ -1494,10 +1500,13 @@ var TRANSLATIONS = {
     th_zona: '\u0417\u043e\u043d\u0430',
     th_tipo: '\u0422\u0438\u043f',
     th_total: '\u0418\u0442\u043e\u0433\u043e',
+    th_mov_total: '\u0412\u0441\u0435\u0433\u043e \u043f\u0435\u0440.',
+    th_mov_dia: '\u041f\u0435\u0440. \u0414\u0415\u041d\u042c',
+    th_mov_noite: '\u041f\u0435\u0440. \u041d\u041e\u0427\u042c',
     th_manha: '\u0423\u0442\u0440\u043e',
     th_tarde: '\u0412\u0435\u0447\u0435\u0440',
     th_capacidade: '\u0415\u043c\u043a\u043e\u0441\u0442\u044c',
-    th_pct_cap: '% \u0415\u043c\u043a\u043e\u0441\u0442\u0438',
+    th_pct_cap: '\u041e\u0431\u043e\u0440\u043e\u0442/\u0435\u043c\u043a.',
     th_responsaveis: '\u041e\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0435',
     th_nome: '\u0418\u043c\u044f',
     th_total_mov: '\u0412\u0441\u0435\u0433\u043e \u043f\u0435\u0440.',
@@ -1813,7 +1822,7 @@ function tipoChip(tipo) {
   if (tipo === 'Monitor AMBOS') return '<span class="chip mon-ambos">&#x1F535; Monitor AMBOS</span>';
   if (tipo === 'Monitor FDS') return '<span class="chip mon-ambos">&#x1F4C5; Monitor FDS</span>';
   if (tipo === 'OFICINA') return '<span class="chip oficina">&#x1F527; Oficina</span>';
-  return '<span class="chip nmon">&#x274C; Nao Monitor</span>';
+  return '<span class="chip nmon" title="Nao encontrado no CSV de Pontos Monitores dentro do raio GPS configurado">&#x274C; Fora Monitor</span>';
 }
 
 function tipoMapColor(tipo) {
@@ -2299,7 +2308,7 @@ function renderCharts(pontos, bloco) {
       {label:'Monitor NOITE', data:dsMonNoite, backgroundColor:'#4b5563', borderRadius:2},
       {label:'Monitor AMBOS', data:dsMonAmbos, backgroundColor:'#3b82f6', borderRadius:2},
       {label:'Oficina', data:dsOficina, backgroundColor:'#fb923c', borderRadius:2},
-      {label:'Nao Monitor', data:dsNaoMon, backgroundColor:'#f87171', borderRadius:2}
+      {label:'Fora Monitor', data:dsNaoMon, backgroundColor:'#f87171', borderRadius:2}
     ]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false}},
@@ -2331,7 +2340,7 @@ function renderCharts(pontos, bloco) {
     else if (p.tipoMonitor === 'OFICINA') monOficina += v;
     else monNao += v;
   });
-  var pieLabels = ['Monitor DIA','Monitor NOITE','Monitor AMBOS','Oficina','Nao Monitor'];
+  var pieLabels = ['Monitor DIA','Monitor NOITE','Monitor AMBOS','Oficina','Fora Monitor'];
   var pieData = [monDia,monNoite,monAmbos,monOficina,monNao];
   var pieColors = ['#fbbf24','#4b5563','#3b82f6','#fb923c','#f87171'];
   var fLabels=[],fData=[],fColors=[];
@@ -2391,13 +2400,14 @@ function renderDashTable(pontos, bloco) {
     var vb = bloco==='dia'?b.manha:bloco==='noite'?b.tarde:b.total;
     return vb-va;
   });
-  var colLabel = bloco === 'dia' ? t('th_manha') : bloco === 'noite' ? t('th_tarde') : t('th_total');
+  var colLabel = bloco === 'dia' ? t('th_mov_dia') : bloco === 'noite' ? t('th_mov_noite') : t('th_mov_total');
   var html = '<table><thead><tr><th>#</th><th>' + t('th_ponto') + '</th><th>' + t('th_zona') + '</th><th>' + t('th_tipo') + '</th><th>' + colLabel + '</th><th>' + t('th_manha') + '</th><th>' + t('th_tarde') + '</th><th>' + t('th_capacidade') + '</th><th>' + t('th_pct_cap') + '</th><th>' + t('th_responsaveis') + '</th></tr></thead><tbody>';
   sorted.forEach(function(p,i){
     var val = bloco==='dia'?p.manha:bloco==='noite'?p.tarde:p.total;
     if (val === 0) return;
-    var pctCap = p.cap > 0 ? Math.round(val / p.cap * 100) : '';
-    var pctColor = pctCap > 100 ? '#f87171' : pctCap > 70 ? '#fbbf24' : '#4ade80';
+    var capRatio = p.cap > 0 ? (val / p.cap) : null;
+    var capRatioTxt = capRatio !== null ? capRatio.toFixed(1) + 'x' : '';
+    var pctColor = capRatio === null ? '#8b949e' : capRatio >= 3 ? '#60a5fa' : capRatio >= 1 ? '#4ade80' : '#8b949e';
     var displayName = pontoDisplay(p);
     var respHtml = '-';
     if (p.tipoMonitor === 'NAO MONITOR' && p.responsaveis && p.responsaveis.length) {
@@ -2411,7 +2421,7 @@ function renderDashTable(pontos, bloco) {
       '<td><span class="chip manha">' + p.manha + '</span></td>' +
       '<td><span class="chip tarde">' + p.tarde + '</span></td>' +
       '<td class="td-dim">' + (p.cap||'-') + '</td>' +
-      '<td>' + (pctCap !== '' ? '<span style="color:'+pctColor+';font-weight:700">'+pctCap+'%</span>' : '-') + '</td>' +
+      '<td>' + (capRatioTxt !== '' ? '<span style="color:'+pctColor+';font-weight:700">'+capRatioTxt+'</span>' : '-') + '</td>' +
       '<td>' + respHtml + '</td></tr>';
   });
   html += '</tbody></table>';
@@ -2524,7 +2534,7 @@ function carregarHistorico() {
       return '<div class="hist-card" onclick="carregarDataHist(\''+esc(d.data)+'\')">' +
         '<div class="hc-date">&#x1F4C5; ' + esc(d.data) + (d.cidade ? ' <span style="color:var(--blue-l);font-size:11px">&#x1F3D9;&#xFE0F; ' + esc(d.cidade) + '</span>' : '') + '</div>' +
         '<div class="hc-stats">' +
-        'Total: <b>' + d.total + '</b> | Monitor DIA: <span style="color:#fbbf24">' + (d.monitorDia||0) + '</span> | Monitor NOITE: <span style="color:#e5e7eb">' + (d.monitorNoite||0) + '</span> | Nao Mon: <span style="color:#f87171">' + (d.naoMonitor||0) + '</span><br>' +
+        'Total: <b>' + d.total + '</b> | Monitor DIA: <span style="color:#fbbf24">' + (d.monitorDia||0) + '</span> | Monitor NOITE: <span style="color:#e5e7eb">' + (d.monitorNoite||0) + '</span> | Fora Mon: <span style="color:#f87171">' + (d.naoMonitor||0) + '</span><br>' +
         'Bloco DIA: <span style="color:#fbbf24">' + (d.manha||0) + '</span> | Bloco NOITE: <span style="color:#6b7280">' + (d.tarde||0) + '</span><br>' +
         'TTL Ponto MON: <span style="color:#4ade80">' + (d.ptosMonitor||0) + '</span> | TTL Ponto N MON: <span style="color:#f87171">' + (d.ptosNaoMon||0) + '</span> | ' +
         '<b style="color:' + ((d.pctEfic||0) >= 70 ? '#4ade80' : (d.pctEfic||0) >= 40 ? '#fbbf24' : '#f87171') + '">Efic: ' + (d.pctEfic||0) + '%</b><br>' +
@@ -2819,7 +2829,7 @@ function _renderCompDashboard(data, containerId, chartSuffix) {
     {label:'Mon NOITE',data:dMN,backgroundColor:'#4b5563',borderRadius:2},
     {label:'Mon AMBOS',data:dMA,backgroundColor:'#3b82f6',borderRadius:2},
     {label:'Oficina',data:dOf,backgroundColor:'#fb923c',borderRadius:2},
-    {label:'Nao Mon',data:dNM,backgroundColor:'#f87171',borderRadius:2}
+    {label:'Fora Mon',data:dNM,backgroundColor:'#f87171',borderRadius:2}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,ticks:{color:'#7d8590',font:{size:9}}},y:{stacked:true,ticks:{color:'#7d8590'},grid:{color:'rgba(255,255,255,.05)'}}}}});
   var turEl = document.getElementById('ch-comp-tur-'+chartSuffix);
   if (turEl) new Chart(turEl, {type:'bar',data:{labels:hLabels,datasets:[{data:dTot,backgroundColor:tColors,borderRadius:3}]},
@@ -3002,7 +3012,7 @@ function renderMultiMovimentacoes(dataArr) {
   // Bar chart comparing totals
   html += '<div class="charts" style="margin-bottom:16px">' +
     '<div class="chart-card"><h4>Total por Dia</h4><canvas id="ch-multi-total"></canvas></div>' +
-    '<div class="chart-card"><h4>Monitor vs Nao Monitor</h4><canvas id="ch-multi-monvsnon"></canvas></div></div>';
+    '<div class="chart-card"><h4>Monitor vs Fora Monitor</h4><canvas id="ch-multi-monvsnon"></canvas></div></div>';
 
   // Hourly comparison chart
   html += '<div class="chart-card" style="margin-bottom:16px"><h4>Movimentacoes por Hora - Todos os Dias</h4><canvas id="ch-multi-hora" height="200"></canvas></div>';
@@ -3015,14 +3025,14 @@ function renderMultiMovimentacoes(dataArr) {
     data:{labels:labels, datasets:[{label:'Total', data:totals, backgroundColor:'#3b82f6', borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#7d8590'}},y:{ticks:{color:'#7d8590'},grid:{color:'rgba(255,255,255,.05)'}}}}});
 
-  // Monitor vs Nao Monitor stacked
+  // Monitor vs Fora Monitor stacked
   var monArr = dataArr.map(function(d){ return (d.stats.monitorDia||0)+(d.stats.monitorNoite||0)+(d.stats.monitorAmbos||0)+(d.stats.monitorFds||0); });
   var nmonArr = dataArr.map(function(d){ return d.stats.naoMonitor||0; });
   var oficArr = dataArr.map(function(d){ return d.stats.oficina||0; });
   new Chart(document.getElementById('ch-multi-monvsnon'), {type:'bar',
     data:{labels:labels, datasets:[
       {label:'Monitor', data:monArr, backgroundColor:'#4ade80', borderRadius:2},
-      {label:'Nao Monitor', data:nmonArr, backgroundColor:'#f87171', borderRadius:2},
+      {label:'Fora Monitor', data:nmonArr, backgroundColor:'#f87171', borderRadius:2},
       {label:'Oficina', data:oficArr, backgroundColor:'#fb923c', borderRadius:2}
     ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#e6edf3'}}},scales:{x:{stacked:true,ticks:{color:'#7d8590'}},y:{stacked:true,ticks:{color:'#7d8590'},grid:{color:'rgba(255,255,255,.05)'}}}}});
 
@@ -3161,7 +3171,7 @@ function renderMediaMovimentacoes(dataArr) {
     {label:'Mon NOITE',data:dMN,backgroundColor:'#4b5563',borderRadius:2},
     {label:'Mon AMBOS',data:dMA,backgroundColor:'#3b82f6',borderRadius:2},
     {label:'Oficina',data:dOf,backgroundColor:'#fb923c',borderRadius:2},
-    {label:'Nao Mon',data:dNM,backgroundColor:'#f87171',borderRadius:2}
+    {label:'Fora Mon',data:dNM,backgroundColor:'#f87171',borderRadius:2}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,ticks:{color:'#7d8590',font:{size:9}}},y:{stacked:true,ticks:{color:'#7d8590'},grid:{color:'rgba(255,255,255,.05)'}}}}});
   new Chart(document.getElementById('ch-media-tur'),{type:'bar',data:{labels:hLabels,datasets:[{data:dTot,backgroundColor:tCols,borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#7d8590',font:{size:9}}},y:{ticks:{color:'#7d8590'},grid:{color:'rgba(255,255,255,.05)'}}}}});
@@ -4850,7 +4860,7 @@ var _gtt;
 function gToast(msg, tipo) { var el=document.getElementById('g-toast'); el.textContent=msg; el.className='show '+(tipo||''); clearTimeout(_gtt); _gtt=setTimeout(function(){el.className='';},3500); }
 
 // ============================================================
-//  ZONA BREAKDOWN (Monitor vs Nao Monitor por Zona)
+//  ZONA BREAKDOWN (Monitor vs Fora Monitor por Zona)
 // ============================================================
 function renderZonaBreakdown(pontos, bloco) {
   var el = document.getElementById('dash-zona-breakdown');
@@ -4872,7 +4882,7 @@ function renderZonaBreakdown(pontos, bloco) {
   var zKeys = Object.keys(zonas).sort();
   if (!zKeys.length) { el.innerHTML=''; return; }
   var periodLabel = bloco==='dia'?' (DIA)':bloco==='noite'?' (NOITE)':'';
-  var html = '<div class="tbl-wrap"><div style="padding:10px 16px;border-bottom:1px solid var(--bdr);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim)">Movimentacoes por Zona - Monitor vs Nao Monitor'+periodLabel+'</div><table><thead><tr><th>Zona</th><th>Total</th><th>Monitor Total</th><th>Monitor DIA</th><th>Monitor NOITE</th><th>Nao Monitor</th><th>% Monitor</th><th>Visual</th></tr></thead><tbody>';
+  var html = '<div class="tbl-wrap"><div style="padding:10px 16px;border-bottom:1px solid var(--bdr);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim)">Movimentacoes por Zona - Monitor vs Fora Monitor'+periodLabel+'</div><table><thead><tr><th>Zona</th><th>Total</th><th>Monitor Total</th><th>Monitor DIA</th><th>Monitor NOITE</th><th>Fora Monitor</th><th>% Monitor</th><th>Visual</th></tr></thead><tbody>';
   zKeys.forEach(function(z){
     var d = zonas[z];
     var pct = d.total > 0 ? (d.monUnique / d.total * 100) : 0;
@@ -4963,7 +4973,7 @@ function renderGeoZonaMovimentos(bloco) {
   var html = '<div class="chart-card" style="margin-bottom:14px"><h4>Movimentacoes por Zona Geografica' + periodLabel + '</h4>' +
     '<canvas id="ch-geo-zona-mov" height="200"></canvas></div>';
   html += '<div class="tbl-wrap"><div style="padding:10px 16px;border-bottom:1px solid var(--bdr);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim)">Detalhamento por Zona Geografica' + periodLabel + '</div>';
-  html += '<table><thead><tr><th>Zona</th><th>Total</th><th>DIA</th><th>NOITE</th><th>T0</th><th>T1</th><th>T2</th><th>Mon DIA</th><th>Mon NOITE</th><th>Nao Mon</th></tr></thead><tbody>';
+  html += '<table><thead><tr><th>Zona</th><th>Total</th><th>DIA</th><th>NOITE</th><th>T0</th><th>T1</th><th>T2</th><th>Mon DIA</th><th>Mon NOITE</th><th>Fora Mon</th></tr></thead><tbody>';
   zKeys.forEach(function(z) {
     var s = zonaStats[z];
     var c = zColor(z);
@@ -5025,7 +5035,7 @@ function exportarExcel() {
     else if(p.tipoMonitor==='NAO MONITOR') zonas[z].nao+=p.total;
     zonas[z].total+=p.total;
   });
-  var zonaData = [['Zona','Total','Monitor Total','Monitor DIA','Monitor NOITE','Nao Monitor','% Monitor']];
+  var zonaData = [['Zona','Total','Monitor Total','Monitor DIA','Monitor NOITE','Fora Monitor','% Monitor']];
   Object.keys(zonas).sort().forEach(function(z){
     var d=zonas[z]; var pct=d.total>0?(d.monUnique/d.total*100).toFixed(1):'0';
     zonaData.push([z, d.total, d.monUnique, d.monDia, d.monNoite, d.nao, pct+'%']);
@@ -5034,7 +5044,7 @@ function exportarExcel() {
   XLSX.utils.book_append_sheet(wb, ws2, 'Por Zona');
   // Sheet 3: Eficiencia
   if (currentData.eficiencia && currentData.eficiencia.length) {
-    var eficData = [['Nome','Total Mov','Monitor DIA','Monitor NOITE','Nao Monitor','% Monitor','Tempo Medio (min)']];
+    var eficData = [['Nome','Total Mov','Monitor DIA','Monitor NOITE','Fora Monitor','% Monitor','Tempo Medio (min)']];
     currentData.eficiencia.forEach(function(p){
       var _base=(p.totalMov||0)-(p.totalOficina||0); var pct = _base>0?Math.min(100,((p.totalMonitorDia||0)+(p.totalMonitorNoite||0)+(p.totalMonitorAmbos||0))/_base*100).toFixed(1):'0';
       eficData.push([p.nome, p.totalMov||0, p.totalMonitorDia||0, p.totalMonitorNoite||0, p.totalNaoMonitor||0, pct+'%', p.avgTempoMin||0]);
@@ -5059,7 +5069,7 @@ function exportarPDF() {
   doc.text('Dashboard Movimentacoes - ' + dataLabel, 14, 15);
   doc.setFontSize(10);
   var s = currentData.stats;
-  doc.text('Total: ' + s.total + ' | Monitor DIA: ' + (s.monitorDia||0) + ' | Monitor NOITE: ' + (s.monitorNoite||0) + ' | Nao Monitor: ' + (s.naoMonitor||0), 14, 22);
+  doc.text('Total: ' + s.total + ' | Monitor DIA: ' + (s.monitorDia||0) + ' | Monitor NOITE: ' + (s.monitorNoite||0) + ' | Fora Monitor: ' + (s.naoMonitor||0), 14, 22);
   doc.text('Bloco DIA (0-12h): ' + (s.manha||0) + ' | Bloco NOITE (12-24h): ' + (s.tarde||0), 14, 27);
   // Tabela pontos
   var rows = [];
@@ -5079,7 +5089,7 @@ function exportarPDF() {
   // Page 2: Zona breakdown
   doc.addPage();
   doc.setFontSize(14);
-  doc.text('Movimentacoes por Zona - Monitor vs Nao Monitor', 14, 15);
+  doc.text('Movimentacoes por Zona - Monitor vs Fora Monitor', 14, 15);
   var zonaRows = [];
   var zonas = {};
   currentData.pontos.forEach(function(p){
@@ -5098,7 +5108,7 @@ function exportarPDF() {
   });
   doc.autoTable({
     startY: 20,
-    head: [['Zona','Total','Mon Total','Mon DIA','Mon NOITE','Nao Mon','% Monitor']],
+    head: [['Zona','Total','Mon Total','Mon DIA','Mon NOITE','Fora Mon','% Monitor']],
     body: zonaRows,
     styles: {fontSize:9, cellPadding:2},
     headStyles: {fillColor:[30,58,95], textColor:255}
@@ -5115,7 +5125,7 @@ function exportarPDF() {
     });
     doc.autoTable({
       startY: 20,
-      head: [['Nome','Total','Mon DIA','Mon NOITE','Nao Mon','% Mon','Tempo Med']],
+      head: [['Nome','Total','Mon DIA','Mon NOITE','Fora Mon','% Mon','Tempo Med']],
       body: eficRows,
       styles: {fontSize:8, cellPadding:2},
       headStyles: {fillColor:[30,58,95], textColor:255}

@@ -8,6 +8,10 @@ var DASH_CONFIG = {
   PLANILHA_ID: ""  // Deixe vazio: será criada automaticamente na 1ª execução
 };
 
+// Matching tolerances for GPS drift around configured points
+var MONITOR_MATCH_RADIUS_M = 80;
+var TODOS_PONTOS_MATCH_RADIUS_M = 80;
+
 // ================================================================
 //  PONTOS MONITOR — Carregados dinamicamente da aba Pontos_Config
 //  Upload via CSV (Belo Horizonte.csv) na aba Upload do dashboard
@@ -269,17 +273,17 @@ function isOficina(endereco) {
 
 // ================================================================
 //  MATCHING: Endereço/Coordenadas → Ponto Monitor
-//  1. Tenta match por coordenadas (haversine 100m) — mais confiável
+//  1. Tenta match por coordenadas — mais confiável
 //  2. Fallback: match por texto (palavras em comum)
 //  Busca em TODOS os arrays (DIA + NOITE + FDS)
 // ================================================================
 function matchPontoMonitorUnificado(endereco, dropoffLat, dropoffLng, pontosAll) {
   if (!endereco && !dropoffLat) return null;
 
-  // Match EXCLUSIVAMENTE por coordenadas (raio 50m)
+  // Match EXCLUSIVAMENTE por coordenadas
   // O CSV define pontos com lat/lng; o matching é feito por proximidade geográfica
   if (dropoffLat && dropoffLng) {
-    var melhorDist = 50; // raio máximo 50 metros
+    var melhorDist = MONITOR_MATCH_RADIUS_M;
     var melhorCoord = null;
     for (var i = 0; i < pontosAll.length; i++) {
       var p = pontosAll[i];
@@ -552,7 +556,7 @@ function importarDados(d) {
       todoMatch = TODOS_PONTOS[lk] || null;
       // If no exact match, try nearby keys (search within ~50m)
       if (!todoMatch) {
-        var bestDist = 50;
+        var bestDist = TODOS_PONTOS_MATCH_RADIUS_M;
         for (var tk in TODOS_PONTOS) {
           var tp = TODOS_PONTOS[tk];
           var tdist = haversine(lookupCoord, lookupLng, tp.lat, tp.lng);

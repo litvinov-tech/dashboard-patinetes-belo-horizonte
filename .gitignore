@@ -1,5 +1,6 @@
 .clasp.json
 .clasprc.json
 node_modules/
+.netlify/
 .DS_Store
 Thumbs.db
